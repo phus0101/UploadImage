@@ -1,0 +1,299 @@
+﻿@using UploadImage.ViewModels
+@{
+    Layout = "_Layout";
+}
+
+@model UploadImageVM
+
+@section Styles{
+    <style>
+        html,
+        body {
+            position: relative;
+            height: 100%;
+        }
+
+        body {
+            background: #eee;
+            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            color: #000;
+            margin: 0;
+            padding: 0;
+        }
+
+        .swiper {
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            text-align: center;
+            font-size: 18px;
+            background: #fff;
+            /* Center slide text vertically */
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+
+        .swiper-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .preview-image{
+            width: 300px;
+            height: 300px;
+            border-width: 2px;
+            border-color: blue;
+            border-style: dashed;
+        }
+        .upload-image{
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .list-images{
+            max-width: 1000px;
+            position: relative;
+            margin: auto;
+        }
+        .image-item{
+            width: 300px;
+            height: 300px;
+            margin: 10px;
+        }
+        .mySlides {
+            position: relative;
+            display: none;
+        }
+        .remove-image{
+            position: absolute;
+            top: -11px;
+            right: -11px;
+            background: black;
+            color: white;
+            padding: 6px;
+            border-radius: 50%;
+            font-size: 15px;
+            line-height: 13px;
+            cursor: pointer;
+            border: 3px solid white;
+        }
+        .mySlides img{
+            max-width: 100%;
+            max-height: 100%;
+        }
+        /* Slideshow container */
+        .slideshow-container {
+            max-width: 300px;
+            max-height: 300px;
+            position: relative;
+            margin: auto;
+        }
+
+        /* Next & previous buttons */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            display: none;
+            z-index: 2;
+        }
+
+        /* Position the "next button" to the right */
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        /* On hover, add a black background color with a little bit see-through */
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+        /* Fading animation */
+        .fade {
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+
+        @@keyframes fade {
+            from {opacity: .4}
+            to {opacity: 1}
+        }
+    </style>
+}
+<div class="slideshow-container mb-3">
+    <a class="prev" onclick="plusSlides(-1)">❮</a>
+    <a class="next" onclick="plusSlides(1)">❯</a>
+</div>
+<form id="form">
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Width</label>
+                            <input type="text" class="form-control" name="width" id="width" required />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Height</label>
+                                <input type="text" class="form-control" name="height" id="height" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image Name</label>
+                    <input type="text" class="form-control" name="image-name" id="image-name" required />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="btn btn-info" for="file">Upload Image</label>
+                        <input type="file" id="file" name="file" accept="image/*" class="d-none" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="preview-image mb-3"></div>
+                        <button class="btn btn-success add-image-to-list" type="button"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<button type="submit" class="btn btn-success save-list-images"><i class="far fa-save"></i> Save</button>
+</form>
+
+@section Scripts{
+    <script>
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            if (n > slides.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = slides.length }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            if(slides && slides.length > 0){
+                slides[slideIndex - 1].style.display = "block";
+                $(".prev").show();
+                $(".next").show();
+            }else{
+                $(".prev").hide();
+                $(".next").hide();
+            }
+        }
+    </script>
+    <script>
+        var uploadedImages = [];
+        var imageTemp;
+
+        $("#file").on("change", function(e){
+            var images = $(this).prop("files");
+            imageTemp = images[0];
+            if (imageTemp) {
+                $(".preview-image").empty();
+                var elemImage = `<img class="img-fluid upload-image" src="${URL.createObjectURL(imageTemp)}" alt="${imageTemp.name}" />`;
+                $(".preview-image").append(elemImage);
+            }
+            $(this).val("");
+        });
+
+        $(".add-image-to-list").on("click", function(){
+            if(imageTemp){
+                var id = Date.now();
+                uploadedImages.push({
+                    File: imageTemp,
+                    Name: $("#image-name").val(),
+                    Width: $("#width").val(),
+                    Height: $("#height").val(),
+                    Id: id,
+                });
+                var elemImage = `<div class="mySlides"><img src=${URL.createObjectURL(imageTemp)} alt="${imageTemp.name}" /><i class="fas fa-times remove-image" data-id="${id}"></i></div>`
+                $(".slideshow-container").append(elemImage);
+                showSlides(slideIndex)
+                console.log(uploadedImages)
+                imageTemp = null;
+            }
+        })
+
+        $(document).on("click", ".remove-image", function () {
+            var id = $(this).data("id");
+            for(var i = 0; i < uploadedImages.length; i++){
+                var item = uploadedImages[i];
+
+                if (id == item.Id) {
+                    uploadedImages.splice(i, 1);
+                    $(this).parent(".mySlides")[0].remove();
+                    slideIndex = 1;
+                    showSlides(slideIndex);
+                    console.log(uploadedImages)
+                }
+            }
+        })
+
+        $("#form").on("submit", function(e){
+            e.preventDefault();
+
+            for(var item of uploadedImages){
+                var form = new FormData();
+                for(var prop in item){
+                    form.append(prop, item[prop])
+                }
+                $.ajax({
+                    url: "/Upload/UploadFiles",
+                    method: "POST",
+                    data: form,
+                    contentType: false,
+                    processData: false,
+                    success: function(res){
+                    },
+                    error: function(){
+                    }
+                })
+            }
+        })
+
+        $(".save-list-images").on("click", function(){
+            
+        })
+    </script>
+}
