@@ -287,25 +287,29 @@
         $("#form").on("submit", function(e){
             e.preventDefault();
 
-            for(var item of uploadedImages){
-                var form = new FormData();
-                for(var prop in item){
-                    form.append(prop, item[prop])
-                }
-                $.ajax({
-                    url: "/Upload/UploadFiles",
-                    method: "POST",
-                    data: form,
-                    contentType: false,
-                    processData: false,
-                    success: function(res){
-                    },
-                    error: function(){
-                        alert("Có lỗi khi upload hình ảnh " + item.name)
+            if(uploadedImages && uploadedImages.length > 0){
+                for(var item of uploadedImages){
+                    var form = new FormData();
+                    for(var prop in item){
+                        form.append(prop, item[prop])
                     }
-                })
+                    $.ajax({
+                        url: "/Upload/UploadFiles",
+                        method: "POST",
+                        data: form,
+                        contentType: false,
+                        processData: false,
+                        success: function(res){
+                        },
+                        error: function(){
+                            alert("Có lỗi khi upload hình ảnh " + item.name)
+                        }
+                    })
+                }
+                alert("Hoàn tất upload")
+            }else{
+                alert("Vui lòng thêm hình để upload")
             }
-            alert("Hoàn tất upload")
         })
     </script>
 }
