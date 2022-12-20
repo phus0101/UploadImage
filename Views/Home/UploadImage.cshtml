@@ -238,20 +238,34 @@
         });
 
         $(".add-image-to-list").on("click", function(){
+            var inputWidth = parseInt($("#width").val());
+            var inputHeight = parseInt($("#height").val());
+            var resolutionAccept = inputWidth * inputHeight;
+
             if(imageTemp){
-                var id = Date.now();
-                uploadedImages.push({
-                    File: imageTemp,
-                    Name: $("#image-name").val(),
-                    Width: $("#width").val(),
-                    Height: $("#height").val(),
-                    Id: id,
-                });
-                var elemImage = `<div class="mySlides"><img src=${URL.createObjectURL(imageTemp)} alt="${imageTemp.name}" /><i class="fas fa-times remove-image" data-id="${id}"></i></div>`
-                $(".slideshow-container").append(elemImage);
-                showSlides(slideIndex)
-                console.log(uploadedImages)
-                imageTemp = null;
+                var img = new Image();
+                img.src = URL.createObjectURL(imageTemp);
+                img.onload = function(){
+                    var imageResolution = this.width * this.height;
+                    if(imageResolution <= (resolutionAccept + (resolutionAccept * 20 / 100)) && imageResolution >= (resolutionAccept - (resolutionAccept * 10 / 100))){
+                        var id = Date.now();
+                        uploadedImages.push({
+                            File: imageTemp,
+                            Name: $("#image-name").val(),
+                            Width: inputWidth,
+                            Height: inputHeight,
+                            Id: id,
+                        });
+                        var elemImage = `<div class="mySlides"><img src=${URL.createObjectURL(imageTemp)} alt="${imageTemp.name}" /><i class="fas fa-times remove-image" data-id="${id}"></i></div>`
+                        $(".slideshow-container").append(elemImage);
+                        showSlides(slideIndex)
+                        console.log(uploadedImages)
+                        imageTemp = null;
+                        alert("Đã thêm vào danh sách hình ảnh")
+                    }else{
+                        alert("Kích thước hình ảnh chưa phù hợp với giá trị đã nhập.");
+                    }
+                }
             }
         })
 
@@ -287,13 +301,11 @@
                     success: function(res){
                     },
                     error: function(){
+                        alert("Có lỗi khi upload hình ảnh " + item.name)
                     }
                 })
             }
-        })
-
-        $(".save-list-images").on("click", function(){
-            
+            alert("Hoàn tất upload")
         })
     </script>
 }

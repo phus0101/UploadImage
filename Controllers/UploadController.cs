@@ -15,13 +15,13 @@ namespace UploadImage.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFiles(ImageVM image)
         {
-            string uploads = Path.Combine(_webHostEnvironment.WebRootPath, "uploads/");
+            string uploads = Path.Combine(_webHostEnvironment.WebRootPath, "uploads/images/");
             // create folder if not exists
             Directory.CreateDirectory(uploads);
             if (image.File.Length > 0)
             {
                 FileInfo fileInfo = new FileInfo(image.File.FileName);
-                string fileName = string.Format("{0}-{1}-{2}{3}", image.Name, image.Width, image.Height, fileInfo.Extension);
+                string fileName = string.Format("{0}_{1}_{2}{3}", image.Name, image.Width, image.Height, fileInfo.Extension);
 
                 string filePath = Path.Combine(uploads, fileName);
                 using (Stream fileStream = new FileStream(filePath, FileMode.Create))
